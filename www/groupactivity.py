@@ -28,8 +28,14 @@ def process_login():
     @returns:   Forwards the session code to the json response
     """
     form = get_form()
-    username = form["username"]
+    username = form["username"].lower()
     password = form["password"]
+
+    # Check this is a user we recognise - they must be in the 
+    # global condiguration so we know which group they belong
+    # to
+    if not username in server_conf["people"]:
+        raise ldap.INVALID_CREDENTIALS
 
     # Check the password against AD
     conn = ldap.initialize("ldap://babraham.ac.uk")
@@ -86,7 +92,7 @@ def process_login():
 def validate_session():
     form = get_form()
     person = checksession(form["session"])
-    return(str(person["name"]))
+    return(str(person["name"]+" ("+server_conf["people"][person["username"]])+")")
 
 def get_form():
     if request.method == "GET":
