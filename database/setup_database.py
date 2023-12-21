@@ -20,14 +20,14 @@ def main():
         authSource = "groupactivity_database"
     )
     db = client.groupactivity_database
-    global sites
+    global activities
     global people
-    sites = db.sites_collection
+    activities = db.activities_collection
     people = db.people_collection
 
     # Remove everything so we're starting fresh
+    activities.delete_many({})
     people.delete_many({})
-    sites.delete_many({})
 
 if __name__ == "__main__":
     main()
