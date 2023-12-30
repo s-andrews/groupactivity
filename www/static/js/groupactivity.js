@@ -11,10 +11,99 @@ $( document ).ready(function() {
         }
     });
 
+    // Action when the date changes
+    $("#dateselector").change(date_changed)
+
     // Action when they log out
     $("#logout").click(logout)
 
+    // Set the current date
+    let d = new Date()
+    let dstr = d.getFullYear()+"-"+String(d.getMonth()).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
+    $("#dateselector").val(dstr)
+    date_changed()
+
+    // Populate the available activities
+    populate_activities()
 })
+
+function date_changed() {
+    console.log("Date changed")
+    // Retrieves the activities recorded for this date already
+    // and populates the set of activities
+
+    let date = $("#dateselector").val()
+
+    $.ajax(
+        {
+            url: "get_activities",
+            method: "POST",
+            data: {
+                session: session,
+                date: date
+            },
+            success: function(activities) {
+                show_performed_activities(activities)
+            },
+            error: function(message) {
+                console.log("Failed to get activities")
+            }
+        }
+    )
+}
+
+function populate_activities() {
+
+    // We need to get a list of all of the possible activities 
+    // for this person and populate the list of available
+    // activities.
+
+    $.ajax(
+        {
+            url: "get_all_activities",
+            method: "POST",
+            data: {
+                session: session
+            },
+            success: function(activities) {
+                show_available_activities(activities)
+            },
+            error: function(message) {
+                console.log("Failed to get available activities")
+            }
+        }
+    )
+
+}
+
+function show_available_activities(activities) {
+    // This is a list of possible activities.  We need to add these
+    // to the availableactivities div
+
+    let activitydiv = $("#availableactivities")
+    for (let x in activities) {
+
+        // Activity is a 2 element list - 0 is the activity group, 1 is the name
+        let activity = activities[x]
+
+        console.log(activity[0]+" : "+activity[1])
+
+        activitydiv.append(`
+            <div class="activity ${activity[0]}">
+                <div class="activityclass">${activity[0]}</div>:
+                <div class="activityname">${activity[1]}</div>
+                <button class="btn btn-secondary">Add</button>
+            </div>`)
+    }
+
+}
+
+function show_performed_activities(activities) {
+    // This provides a list of activities
+    // which have been performed already
+
+
+}
 
 
 function show_login() {

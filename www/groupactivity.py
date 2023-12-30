@@ -94,6 +94,36 @@ def validate_session():
     person = checksession(form["session"])
     return(str(person["name"]+" ("+server_conf["people"][person["username"]])+")")
 
+
+
+@app.route("/get_all_activities", methods = ['POST', 'GET'])
+def get_all_activities():
+    form = get_form()
+    person = checksession(form["session"])
+
+    group = server_conf["people"][person["username"]]
+    activities = server_conf["activities"][group]
+
+    return jsonify(activities)
+
+@app.route("/get_activities", methods = ['POST', 'GET'])
+def get_activities():
+    form = get_form()
+    person = checksession(form["session"])
+    date = form["date"]
+
+    existing_activities = []
+    search_result = activities.find_one({"person_id":person["_id"], "date":date})
+
+    if search_result:
+        existing_activities = search_result["activities"]
+    
+        return jsonify(existing_activities)
+    
+    return jsonify([])
+
+
+
 def get_form():
     if request.method == "GET":
         return request.args
@@ -171,6 +201,8 @@ def connect_to_database(conf):
 
     global people
     people = db.people_collection
+    global activities
+    activities = db.activities_collection
 
 
 # Read the main configuration
