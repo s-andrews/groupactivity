@@ -38,9 +38,6 @@ h2 {
     background-color: darkgray;
     cursor: pointer;
 }
-.Absent {
-    background-color: blue;
-}
 .activityclass {
     display: inline-block;
 }
@@ -51,3 +48,27 @@ h2 {
     display: inline-block;
 }
 
+/* Activity classes */
+.Absent {
+    background-color: darkblue;
+}
+
+.Training {
+    background-color: darkgreen;
+}
+
+.Support {
+    background-color: darkred;
+}
+
+.Development {
+    background-color: darkmagenta;
+}
+
+.Infrastructure {
+    background-color: darkorange;
+}
+
+.Institute {
+    background-color: saddlebrown;
+}

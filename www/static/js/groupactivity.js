@@ -17,10 +17,20 @@ $( document ).ready(function() {
     // Action when they log out
     $("#logout").click(logout)
 
-    // Set the current date
+    // Set the current date and don't let them set dates in
+    // the future or more than a month ago
     let d = new Date()
-    let dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
+    let dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDate()).padStart(2,0)
     $("#dateselector").val(dstr)
+
+    // They can't select anything after today
+    $("#dateselector").attr("max",dstr)
+
+    // They can only add events for the last week
+    d = new Date(d.getTime() - (7 * 24 * 60 * 60 * 1000))
+    dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDate()).padStart(2,0)
+    $("#dateselector").attr("min",dstr)
+
 })
 
 function alert(message) {
@@ -262,6 +272,9 @@ function show_login() {
 function logout() {
     session_id = ""
     Cookies.remove("groupactivity_session_id")
+    $("#availableactivities").empty()
+    $("#usedactivities").empty()
+    $("#loginname").val("")
     $("#maincontent").hide()
 
     $("#logindiv").modal("show")
