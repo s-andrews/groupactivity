@@ -20,7 +20,7 @@ Then activate this on windows with
 
 ..or on linux with 
 
-```. venv/Scripts/activate```
+```. venv/bin/activate```
 
 Then install the required packages
 
