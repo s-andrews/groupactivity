@@ -34,13 +34,23 @@ function alert(message) {
 }
 
 function date_changed() {
-    console.log("Date changed")
     // Retrieves the activities recorded for this date already
     // and populates the set of activities
 
     let date = $("#dateselector").val()
+    console.log("Date changed to "+date)
 
     // Check whether the date is after today, and reset if it is
+    if (new Date(date) > new Date()) {
+        alert("Date is in the future -resetting to today")
+        let d = new Date()
+        let dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
+
+        // This triggers the date_changed function but for the old date again
+        // for a reason I don't understand
+        $("#dateselector").val(dstr)
+        date_changed()
+    }
 
     $.ajax(
         {
