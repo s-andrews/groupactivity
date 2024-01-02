@@ -24,9 +24,9 @@ Then activate this on windows with
 
 Then install the required packages
 
-```pip install flask pymongo```
+```pip install -r requirements.txt```
 
-You also need ```python-ldap``` on linux you install this with
+You will also need ```python-ldap``` on linux you install this with
 
 ```pip install python-ldap```
 
