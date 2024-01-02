@@ -1,0 +1,9 @@
+{
+    "person_id": "oid_from_person",
+    "date":"2023-12-21",
+    "activities": [
+        ["group","activity"],
+        ["group","activity"]
+    ]
+
+}
