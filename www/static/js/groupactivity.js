@@ -106,10 +106,9 @@ function show_available_activities(activities) {
 
         // We need to add it to the used activities list
         activitydiv.append(`
-            <div class="activity ${activity[0]}">
+            <div class="activity availableactivity rounded ${activity[0]}">
                 <div class="activityclass">${activity[0]}</div>:
                 <div class="activityname">${activity[1]}</div>
-                <button class="btn btn-secondary availableactivity">Add</button>
             </div>`)
     }
 
@@ -120,8 +119,8 @@ function show_available_activities(activities) {
 }
 
 function add_activity() {
-    let category = $(this).parent().find("div").eq(0).text()
-    let activity = $(this).parent().find("div").eq(1).text()
+    let category = $(this).find("div").eq(0).text()
+    let activity = $(this).find("div").eq(1).text()
     let date = $("#dateselector").val()
 
     $.ajax(
@@ -152,11 +151,11 @@ function add_activity() {
 }
 
 function remove_activity() {
-    let category = $(this).parent().find("div").eq(0).text()
-    let activity = $(this).parent().find("div").eq(1).text()
+    let category = $(this).find("div").eq(0).text()
+    let activity = $(this).find("div").eq(1).text()
     let date = $("#dateselector").val()
 
-    $(this).parent().remove()
+    $(this).remove()
 
     $.ajax(
         {
@@ -213,10 +212,9 @@ function add_performed_activity(div,activity) {
     $("#availableactivities").find("."+activity[0]).find(".activityname").filter(function(){ return $(this).text() === activity[1];}).parent().hide()
 
     div.append(`
-    <div class="activity ${activity[0]}">
+    <div class="activity usedactivity rounded ${activity[0]}">
         <div class="activityclass">${activity[0]}</div>:
         <div class="activityname">${activity[1]}</div>
-        <button class="btn btn-secondary usedactivity">Remove</button>
     </div>`)
 }
 
