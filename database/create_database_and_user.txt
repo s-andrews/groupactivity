@@ -4,7 +4,7 @@ use groupactivity_database
 db.createUser(
   {
     user: "groupactivity",
-    pwd:  "D@iDQVkpagT&otSu2w#g",
+    pwd:  "thisisapassword",
     roles: [ { role: "readWrite", db: "groupactivity_database" }]
   }
 )
