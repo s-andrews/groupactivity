@@ -123,6 +123,36 @@ def get_activities():
     return jsonify([])
 
 
+@app.route("/add_activity", methods = ['POST', 'GET'])
+def add_activity():
+    form = get_form()
+    person = checksession(form["session"])
+    date = form["date"]
+    activitycategory = form["activitycategory"]
+    activitytext = form["activitytext"]
+
+    search_result = activities.find_one({"person_id":person["_id"], "date":date})
+
+    if not search_result:
+        # We need to add a blank result for this date
+
+        new_activity = {
+            "person_id": person["_id"],
+            "date":date,
+            "activities": []
+        }
+
+        activities.insert_one(new_activity)
+
+
+    activities.update_one(
+        {"person_id":person["_id"], "date":date},
+        {"$push":{"activities":[activitycategory,activitytext]}}
+    )
+
+
+    return jsonify([activitycategory,activitytext])
+
 
 def get_form():
     if request.method == "GET":

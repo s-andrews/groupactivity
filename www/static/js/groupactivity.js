@@ -19,10 +19,19 @@ $( document ).ready(function() {
 
     // Set the current date
     let d = new Date()
-    let dstr = d.getFullYear()+"-"+String(d.getMonth()).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
+    let dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
     $("#dateselector").val(dstr)
-    date_changed()
 })
+
+function alert(message) {
+    console.log(message)
+    $("#alerts").append(`
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `)
+}
 
 function date_changed() {
     console.log("Date changed")
@@ -30,6 +39,8 @@ function date_changed() {
     // and populates the set of activities
 
     let date = $("#dateselector").val()
+
+    // Check whether the date is after today, and reset if it is
 
     $.ajax(
         {
@@ -43,7 +54,7 @@ function date_changed() {
                 show_performed_activities(activities)
             },
             error: function(message) {
-                console.log("Failed to get activities")
+                alert("Failed to get activities")
             }
         }
     )
@@ -66,7 +77,7 @@ function populate_activities() {
                 show_available_activities(activities)
             },
             error: function(message) {
-                console.log("Failed to get available activities")
+                alert("Failed to get available activities")
             }
         }
     )
@@ -83,23 +94,74 @@ function show_available_activities(activities) {
         // Activity is a 2 element list - 0 is the activity group, 1 is the name
         let activity = activities[x]
 
-        console.log(activity[0]+" : "+activity[1])
-
         activitydiv.append(`
             <div class="activity ${activity[0]}">
                 <div class="activityclass">${activity[0]}</div>:
                 <div class="activityname">${activity[1]}</div>
-                <button class="btn btn-secondary">Add</button>
+                <button class="btn btn-secondary availableactivity">Add</button>
             </div>`)
     }
 
+    // Set the action on these new activities
+    $(".availableactivity").unbind("click")
+    $(".availableactivity").click(add_activity)
+
+}
+
+function add_activity() {
+    let category = $(this).parent().find("div").eq(0).text()
+    let activity = $(this).parent().find("div").eq(1).text()
+    let date = $("#date")
+
+    $(this).parent().hide()
+
+    $.ajax(
+        {
+            url: "add_activity",
+            method: "POST",
+            data: {
+                session: session,
+                date: $("#dateselector").val(),
+                activitycategory: category,
+                activitytext: activity
+            },
+            success: function(activity) {
+                let activitydiv = $("#usedactivities")
+                add_performed_activity(activitydiv,activity) 
+            },
+            error: function(message) {
+                alert("Failed to add new activity")
+            }
+        }
+    )
 }
 
 function show_performed_activities(activities) {
     // This provides a list of activities
     // which have been performed already
 
+    // We need to set all of the possible activities
+    // back to being visible as they may have been
+    // hidden
+    $("#availableactivities").find(".activity").show()
 
+    let activitydiv = $("#usedactivities")
+    for (let x in activities) {
+
+        // Activity is a 2 element list - 0 is the activity group, 1 is the name
+        let activity = activities[x]
+
+        add_performed_activity(activitydiv,activity)
+    }
+}
+
+function add_performed_activity(div,activity) {
+    div.append(`
+    <div class="activity ${activity[0]}">
+        <div class="activityclass">${activity[0]}</div>:
+        <div class="activityname">${activity[1]}</div>
+        <button class="btn btn-secondary">Remove</button>
+    </div>`)
 }
 
 
@@ -125,6 +187,7 @@ function show_login() {
                     $("#loginname").text(usersname)
 
                     populate_activities()
+                    date_changed()
 
                 },
                 error: function(message) {
