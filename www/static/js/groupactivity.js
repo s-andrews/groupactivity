@@ -50,18 +50,6 @@ function date_changed() {
     let date = $("#dateselector").val()
     console.log("Date changed to "+date)
 
-    // Check whether the date is after today, and reset if it is
-    if (new Date(date) > new Date()) {
-        alert("Date is in the future -resetting to today")
-        let d = new Date()
-        let dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
-
-        // This triggers the date_changed function but for the old date again
-        // for a reason I don't understand
-        $("#dateselector").val(dstr)
-        date_changed()
-    }
-
     $.ajax(
         {
             url: "get_activities",
@@ -306,11 +294,14 @@ function process_login() {
                 show_login()
             },
             error: function(message) {
-                $("#loginerror").html("Login Failed")
-                $("#loginerror").show()
+                $("#login").text("Login Failed")
+                $("#login").removeClass("btn-primary")
+                $("#login").addClass("btn-danger")
                 setTimeout(function(){
-                    $("#loginerror").hide()
-                },2000)
+                    $("#login").text("Log In")
+                    $("#login").removeClass("btn-danger")
+                    $("#login").addClass("btn-primary")
+                    },2000)
             }
         }
     )
