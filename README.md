@@ -52,3 +52,16 @@ Finally you can start the flask application so the system will become active.  T
 For development you would move into the ```www``` folder and then run
 
 ```flask --debug --app groupactivity.py run```
+
+For production you would server the app with waitress.  Normally you would do this on a local port and then use a proxy server to make this public on port 80
+
+```waitress-serve --host 127.0.0.1 --port 5000 groupactivity:app```
+
+You can change the port to any free port.
+
+Configuration for apache would be as simple as:
+
+```
+ProxyPass         /groupactivity/  http://localhost:5000/
+ProxyPassReverse  /groupactivity/  http://localhost:5000/
+```
