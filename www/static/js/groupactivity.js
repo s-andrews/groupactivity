@@ -94,6 +94,7 @@ function show_available_activities(activities) {
         // Activity is a 2 element list - 0 is the activity group, 1 is the name
         let activity = activities[x]
 
+        // We need to add it to the used activities list
         activitydiv.append(`
             <div class="activity ${activity[0]}">
                 <div class="activityclass">${activity[0]}</div>:
@@ -112,8 +113,6 @@ function add_activity() {
     let category = $(this).parent().find("div").eq(0).text()
     let activity = $(this).parent().find("div").eq(1).text()
     let date = $("#date")
-
-    $(this).parent().hide()
 
     $.ajax(
         {
@@ -144,6 +143,7 @@ function show_performed_activities(activities) {
     // back to being visible as they may have been
     // hidden
     $("#availableactivities").find(".activity").show()
+    $("#usedactivities").empty()
 
     let activitydiv = $("#usedactivities")
     for (let x in activities) {
@@ -156,6 +156,9 @@ function show_performed_activities(activities) {
 }
 
 function add_performed_activity(div,activity) {
+    // Remove this from the set of available activities
+    $("#availableactivities").find("."+activity[0]).find(".activityname").filter(function(){ return $(this).text() === activity[1];}).parent().hide()
+
     div.append(`
     <div class="activity ${activity[0]}">
         <div class="activityclass">${activity[0]}</div>:
