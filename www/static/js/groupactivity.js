@@ -22,9 +22,6 @@ $( document ).ready(function() {
     let dstr = d.getFullYear()+"-"+String(d.getMonth()).padStart(2,0)+"-"+String(d.getDay()).padStart(2,0)
     $("#dateselector").val(dstr)
     date_changed()
-
-    // Populate the available activities
-    populate_activities()
 })
 
 function date_changed() {
@@ -126,6 +123,8 @@ function show_login() {
                     $("#maincontent").show()
 
                     $("#loginname").text(usersname)
+
+                    populate_activities()
 
                 },
                 error: function(message) {
