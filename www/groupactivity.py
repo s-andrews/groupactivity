@@ -154,6 +154,29 @@ def add_activity():
     return jsonify([activitycategory,activitytext])
 
 
+@app.route("/remove_activity", methods = ['POST', 'GET'])
+def remove_activity():
+    form = get_form()
+    person = checksession(form["session"])
+    date = form["date"]
+    activitycategory = form["activitycategory"]
+    activitytext = form["activitytext"]
+
+    search_result = activities.find_one({"person_id":person["_id"], "date":date})
+
+    if not search_result:
+        raise Exception("Couldn't find activitiy to remove")
+
+    activities.update_one(
+        {"person_id":person["_id"], "date":date},
+        {"$pull":{"activities":[activitycategory,activitytext]}}
+    )
+
+    return jsonify([activitycategory,activitytext])
+
+
+
+
 def get_form():
     if request.method == "GET":
         return request.args

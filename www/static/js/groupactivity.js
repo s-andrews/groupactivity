@@ -122,7 +122,7 @@ function show_available_activities(activities) {
 function add_activity() {
     let category = $(this).parent().find("div").eq(0).text()
     let activity = $(this).parent().find("div").eq(1).text()
-    let date = $("#date")
+    let date = $("#dateselector").val()
 
     $.ajax(
         {
@@ -130,13 +130,19 @@ function add_activity() {
             method: "POST",
             data: {
                 session: session,
-                date: $("#dateselector").val(),
+                date: date,
                 activitycategory: category,
                 activitytext: activity
             },
             success: function(activity) {
                 let activitydiv = $("#usedactivities")
                 add_performed_activity(activitydiv,activity) 
+
+                // Reset the click events
+                $(".usedactivity").unbind("click")
+                $(".usedactivity").click(remove_activity)
+            
+                
             },
             error: function(message) {
                 alert("Failed to add new activity")
@@ -144,6 +150,38 @@ function add_activity() {
         }
     )
 }
+
+function remove_activity() {
+    let category = $(this).parent().find("div").eq(0).text()
+    let activity = $(this).parent().find("div").eq(1).text()
+    let date = $("#dateselector").val()
+
+    $(this).parent().remove()
+
+    $.ajax(
+        {
+            url: "remove_activity",
+            method: "POST",
+            data: {
+                session: session,
+                date: date,
+                activitycategory: category,
+                activitytext: activity
+            },
+            success: function(activity) {
+                // Add this back to the options for the 
+                // available activities
+                $("#availableactivities").find("."+activity[0]).find(".activityname").filter(function(){ return $(this).text() === activity[1];}).parent().show()
+
+            },
+            error: function(message) {
+                alert("Failed to remove activity")
+            }
+        }
+    )
+}
+
+
 
 function show_performed_activities(activities) {
     // This provides a list of activities
@@ -163,6 +201,11 @@ function show_performed_activities(activities) {
 
         add_performed_activity(activitydiv,activity)
     }
+
+    // Set the action on these new activities
+    $(".usedactivity").unbind("click")
+    $(".usedactivity").click(remove_activity)
+    
 }
 
 function add_performed_activity(div,activity) {
@@ -173,7 +216,7 @@ function add_performed_activity(div,activity) {
     <div class="activity ${activity[0]}">
         <div class="activityclass">${activity[0]}</div>:
         <div class="activityname">${activity[1]}</div>
-        <button class="btn btn-secondary">Remove</button>
+        <button class="btn btn-secondary usedactivity">Remove</button>
     </div>`)
 }
 
