@@ -26,8 +26,8 @@ $( document ).ready(function() {
     // They can't select anything after today
     $("#dateselector").attr("max",dstr)
 
-    // They can only add events for the last week
-    d = new Date(d.getTime() - (7 * 24 * 60 * 60 * 1000))
+    // They can only add events for the last two weeks
+    d = new Date(d.getTime() - (14 * 24 * 60 * 60 * 1000))
     dstr = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,0)+"-"+String(d.getDate()).padStart(2,0)
     $("#dateselector").attr("min",dstr)
 
