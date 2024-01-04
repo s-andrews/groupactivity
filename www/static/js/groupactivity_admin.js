@@ -63,7 +63,7 @@ function write_completion_data (completion_data) {
     body.empty()
     for (i in completion_data["people"]) {
         let person = completion_data["people"][i]
-        let row_data = `<tr data-username=${person[i][1]}>`
+        let row_data = `<tr data-username=${person[0][1]}>`
         for (j in person) {
             if (j==0) {
                 row_data += `<td>${person[j][0]}</td>`
