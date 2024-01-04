@@ -2,7 +2,8 @@
     "server": {
         "address":"127.0.0.1",
         "username":"webuser",
-        "password":"password_goes_here"
+        "password":"password_goes_here",
+        "ldap": "example.com"
     },
     
     "people" : {
@@ -13,36 +14,31 @@
         "montgomj":"bioinformatics"
     },
 
+    "admins" : {
+        "andrewss": "bioinformatics"
+    },
+
     "activities": {
-        "bioinformatics": {
-            "Training": [
-                "Presenting Training",
-                "Developing Training",
-                "Training Admin"
-            ],
-            "Support": [
-                "Institute Analysis",
-                "Commerical Analysis",
-                "Institute Advice",
-                "Commerical Advice",
-                "Software Support",
-                "Background reading"
-            ],
-            "Development": [
-                "Analysis Software Development",
-                "Infrastructure Software Development"
-            ],
-            "Servers" : [
-                "Cluster maintenance",
-                "Web server maintenance",
-                "Hardware maintenance"
-            ],
-            "Institute" : [
-                "Admin paperwork",
-                "Committee work",
-                "Outreach work"
-            ]
-        }
-    }
-   
+        "bioinformatics": [
+            ["Absent","Holiday"],
+            ["Absent", "Other Absent"],
+            ["Training","Presenting Training"],
+            ["Training","Developing Training"],
+            ["Training","Training Admin"],
+            ["Support","Institute Analysis"],
+            ["Support","Commercial Analysis"],
+            ["Support","Institute Advice"],
+            ["Support","Commercial Advice"],
+            ["Support","Software Support"],
+            ["Support","Background Reading"],
+            ["Development","Analysis Software Development"],
+            ["Development","Infrastructure Software Development"],
+            ["Infrastructure","Cluster maintenance"],
+            ["Infrastructure", "Web server maintenance"],
+            ["Infrastructure","Other server work"],
+            ["Institute","Admin paperwork"],
+            ["Institute","Committee work"],
+            ["Institute","Outreach work"]
+        ]
+    }   
 }

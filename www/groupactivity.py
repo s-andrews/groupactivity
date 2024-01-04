@@ -7,6 +7,7 @@ from bson.json_util import dumps
 from pathlib import Path
 import json
 import ldap
+import datetime
 
 app = Flask(__name__)
 
@@ -14,6 +15,12 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
 
 @app.route("/login", methods = ['POST', 'GET'])
 def process_login():
@@ -92,6 +99,72 @@ def validate_session():
     form = get_form()
     person = checksession(form["session"])
     return(str(person["name"]+" ("+server_conf["people"][person["username"]])+")")
+
+
+@app.route("/admin/get_completion", methods = ['POST', 'GET'])
+def get_completion():
+    form = get_form()
+    person = checksession(form["session"])
+
+    # This only works if the person is allowed to admin
+    # a group.
+
+    if not person["username"] in server_conf["admins"]:
+        raise Exception(person["username"]+" is not an admin")
+
+    # We need to find the group which they admin    
+    group = server_conf["admins"][person["username"]]
+
+    # We then need to find the usernames of all of the
+    # people in the group.
+
+    usernames = []
+
+    for username in server_conf["people"].keys():
+        if server_conf["people"][username] == group:
+            usernames.append(username)
+
+    # We show data for the current week so we need to find the
+    # last monday before today.  We find today and then subtract
+    # the day of the week from it.  That will get us the previous 
+    # Monday.
+    monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
+
+    # We collect the dates as both readable dates and YYYY-MM-DD
+    days = []
+    dates = []
+
+    for offset in range(0,5):
+        thisday = monday+datetime.timedelta(offset)
+        days.append(thisday.strftime("%d %b"))
+        dates.append(str(thisday))
+    
+    # Now we need to go through the users and add their records to the data
+        
+    returndata = {
+        "days": days,
+        "people": []
+    }
+
+    for username in usernames:
+        # See if we have an entry for this person
+        user = people.find_one({"username":username})
+
+        if not user:
+            # We just use their username and a blank return
+            returndata["people"].append([username,0,0,0,0])
+        else:
+            answers = [user["name"]]
+            for date in dates:
+                datedata = activities.find_one({"person_id":user["_id"], "date":date})
+                if datedata is None or not datedata["activities"]:
+                    # No return on this date for this user
+                    answers.append(0)
+                else:
+                    answers.append(1)
+            returndata["people"].append(answers)
+
+    return jsonify(returndata)
 
 
 
