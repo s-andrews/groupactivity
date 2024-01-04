@@ -5,7 +5,9 @@ function load_initial_content() {
 }
 
 function clear_loaded_content() {
-    
+    $("#groupname").text("")
+    $("#completionheader").empty()
+    $("#completionbody").empty()
 }
 
 function get_completion() {
@@ -31,6 +33,9 @@ function write_completion_data (completion_data) {
     // We're populating the table of completion data. We have the 
     // list of dates we're using and then the completion for each
     // of the people
+
+    // Clear and repopulate the group name
+    $("#groupname").text(`${completion_data["group"]}`)
 
     // Clear and repopulate the header
     let header = $("#completionheader")

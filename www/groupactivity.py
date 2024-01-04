@@ -143,6 +143,7 @@ def get_completion():
     # Now we need to go through the users and add their records to the data
         
     returndata = {
+        "group": group,
         "days": days,
         "people": []
     }
