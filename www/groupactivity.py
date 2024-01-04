@@ -125,11 +125,20 @@ def get_completion():
         if server_conf["people"][username] == group:
             usernames.append(username)
 
+    # They may have supplied a date, if not then we use today
+    refdate = datetime.date.today()
+    if "date" in form and form["date"]:
+        refdate = datetime.datetime.strptime(form["date"], "%Y-%m-%d")
+
     # We show data for the current week so we need to find the
     # last monday before today.  We find today and then subtract
     # the day of the week from it.  That will get us the previous 
     # Monday.
-    monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
+    monday = refdate - datetime.timedelta(days=refdate.weekday())
+
+    # We also want to populate the previous next dates
+    previous = (monday - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
+    next = (monday + datetime.timedelta(days=7)).strftime('%Y-%m-%d')
 
     # We collect the dates as both readable dates and YYYY-MM-DD
     days = []
@@ -138,13 +147,15 @@ def get_completion():
     for offset in range(0,5):
         thisday = monday+datetime.timedelta(offset)
         days.append(thisday.strftime("%d %b"))
-        dates.append(str(thisday))
+        dates.append(thisday.strftime('%Y-%m-%d'))
     
     # Now we need to go through the users and add their records to the data
         
     returndata = {
         "group": group,
         "days": days,
+        "previous": previous,
+        "next": next,
         "people": []
     }
 

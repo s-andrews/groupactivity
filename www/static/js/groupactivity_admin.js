@@ -1,7 +1,12 @@
 // This is the code which is specific to the admin page
 
 function load_initial_content() {
-    get_completion()
+    // Set the click events for the previous next buttons
+    $("#completionprevious").unbind()
+    $("#completionprevious").click(function() {get_completion($("#completionprevious").data("date"))})
+    $("#completionnext").unbind()
+    $("#completionnext").click(function() {get_completion($("#completionnext").data("date"))})
+    get_completion("")
 }
 
 function clear_loaded_content() {
@@ -10,13 +15,14 @@ function clear_loaded_content() {
     $("#completionbody").empty()
 }
 
-function get_completion() {
+function get_completion(date) {
     $.ajax(
         {
             url: "admin/get_completion",
             method: "POST",
             data: {
-                session: session
+                session: session,
+                date: date
             },
             success: function(completion_data) {
                 write_completion_data(completion_data)
@@ -36,6 +42,10 @@ function write_completion_data (completion_data) {
 
     // Clear and repopulate the group name
     $("#groupname").text(`${completion_data["group"]}`)
+
+    // Add the previous/next dates to the appropriate buttons
+    $("#completionprevious").data("date",completion_data["previous"])
+    $("#completionnext").data("date",completion_data["next"])
 
     // Clear and repopulate the header
     let header = $("#completionheader")
