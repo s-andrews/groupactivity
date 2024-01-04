@@ -102,6 +102,29 @@ def validate_session():
     return(str(person["name"]+" ("+server_conf["people"][person["username"]])+")")
 
 
+@app.route("/admin/completion_details", methods = ['POST', 'GET'])
+def completion_details():
+    form = get_form()
+    person = checksession(form["session"])
+
+    query_username = form["username"]
+    date = form["date"]
+
+    # We need to check that this person is allowed to view the 
+    # details of this user
+    if not person["username"] in server_conf["admins"] and server_conf["admins"][person["username"]] == server_conf["people"][query_username]:
+        raise Exception("You are not allowed to look at this users data")
+
+    # We need to get the real name for this user
+    query_person = people.find_one({"username":query_username})
+    query_name = query_person["name"]
+
+    # We need to get their set of activities for the requested date
+    query_activities = activities.find_one({"person_id":query_person["_id"], "date":date})
+    nice_date = datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%d %b")
+
+    return jsonify({"name":query_name, "date":nice_date, "activities":query_activities["activities"]})
+
 @app.route("/admin/get_completion", methods = ['POST', 'GET'])
 def get_completion():
     form = get_form()
@@ -154,6 +177,7 @@ def get_completion():
     returndata = {
         "group": group,
         "days": days,
+        "dates": dates,
         "previous": previous,
         "next": next,
         "people": []
@@ -165,9 +189,9 @@ def get_completion():
 
         if not user:
             # We just use their username and a blank return
-            returndata["people"].append([username,0,0,0,0,0])
+            returndata["people"].append([[username,username],0,0,0,0,0])
         else:
-            answers = [user["name"]]
+            answers = [[user["name"],username]]
             for date in dates:
                 datedata = activities.find_one({"person_id":user["_id"], "date":date})
                 if datedata is None or not datedata["activities"]:

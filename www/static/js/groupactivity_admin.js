@@ -60,14 +60,14 @@ function write_completion_data (completion_data) {
     body.empty()
     for (i in completion_data["people"]) {
         let person = completion_data["people"][i]
-        let row_data = "<tr>"
+        let row_data = `<tr data-username=${person[i][1]}>`
         for (j in person) {
             if (j==0) {
-                row_data += `<td>${person[j]}</td>`
+                row_data += `<td>${person[j][0]}</td>`
             }
             else {
                 if (person[j]) {
-                    row_data += `<td class="table-success">&check;</td>`
+                    row_data += `<td class="table-success completionvalue" data-date="${completion_data["dates"][j-1]}">&check;</td>`
                 }
                 else {
                     row_data += `<td class="table-danger">&cross;</td>`
@@ -78,4 +78,35 @@ function write_completion_data (completion_data) {
         body.append(row_data)
     }
 
+    //  Update the bindings
+    $(".completionvalue").unbind()
+    $(".completionvalue").click(show_completion_details)
+
+}
+
+function show_completion_details() {
+    let date = $(this).data("date")
+    let username = $(this).parent().data("username")
+
+    $.ajax(
+        {
+            url: "admin/completion_details",
+            method: "POST",
+            data: {
+                session: session,
+                date: date,
+                username: username
+            },
+            success: function(completion_data) {
+                write_completion_details(completion_data)
+            },
+            error: function(message) {
+                alert("Failed to get completion details")
+            }
+        }
+    )
+}
+
+function write_completion_details(completion_data) {
+    
 }
