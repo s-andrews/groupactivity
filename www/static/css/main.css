@@ -63,3 +63,9 @@ h2 {
 .Institute {
     background-color: saddlebrown;
 }
+
+/* Admin page */
+#groupname {
+    margin-left: 2em;
+    margin-right: 2em;
+}
