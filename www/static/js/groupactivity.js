@@ -74,7 +74,7 @@ function logout() {
     session_id = ""
     Cookies.remove("groupactivity_session_id")
     clear_loaded_content()
-    $("#loginname").val("")
+    $("#loginname").text("")
     $("#maincontent").hide()
 
     $("#logindiv").modal("show")

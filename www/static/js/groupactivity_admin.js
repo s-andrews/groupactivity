@@ -13,6 +13,9 @@ function clear_loaded_content() {
     $("#groupname").text("")
     $("#completionheader").empty()
     $("#completionbody").empty()
+    $("#completion_user").text("")
+    $("#completion_date").text("")
+    $("#completion_activities").empty()
 }
 
 function get_completion(date) {
@@ -108,5 +111,19 @@ function show_completion_details() {
 }
 
 function write_completion_details(completion_data) {
-    
+    $("#completion_user").text(`${completion_data["name"]}`)
+    $("#completion_date").text(`${completion_data["date"]}`)
+
+    let div = $("#completion_activities")
+
+    div.empty()
+
+    for (i in completion_data["activities"]) {
+        activity = completion_data["activities"][i]
+        div.append(`
+        <div class="activity usedactivity rounded ${activity[0]}">
+            <div class="activityclass">${activity[0]}</div>:
+            <div class="activityname">${activity[1]}</div>
+        </div>`)
+    }
 }
