@@ -153,7 +153,7 @@ def get_completion():
 
         if not user:
             # We just use their username and a blank return
-            returndata["people"].append([username,0,0,0,0])
+            returndata["people"].append([username,0,0,0,0,0])
         else:
             answers = [user["name"]]
             for date in dates:
