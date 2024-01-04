@@ -53,9 +53,9 @@ For development you would move into the ```www``` folder and then run
 
 ```flask --debug --app groupactivity.py run```
 
-For production you would server the app with waitress.  Normally you would do this on a local port and then use a proxy server to make this public on port 80
+For production you would server the app with waitress.  Normally you would do this on a local port and then use a proxy server to make this public on port 80.  The example below shows the use of the ```--url-prefix``` option which would be needed if this application was served from within a sub-folder.
 
-```waitress-serve --host 127.0.0.1 --port 5000 groupactivity:app```
+```waitress-serve --host 127.0.0.1 --url-prefix="/groupactivity/" --port 5000 groupactivity:app```
 
 You can change the port to any free port.
 
